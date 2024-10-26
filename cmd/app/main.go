@@ -14,6 +14,6 @@ func main() {
 	cfg := config.LoadConfig()
 	fmt.Println(cfg.Start)
 
-	r, _ := math.Calc("1+1")
+	r, _ := math.Calc("(1 + (2 - 3) * 4) / 2")
 	fmt.Println(r)
 }
