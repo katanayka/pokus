@@ -8,10 +8,6 @@ import (
 	"strings"
 )
 
-func deleteElement(s []string, index int) []string {
-	return append(s[:index], s[index+1:]...)
-}
-
 func Operation(first string, operand string, second string) (float64, error) {
 	num1, err1 := strconv.ParseFloat(first, 64)
 	num2, err2 := strconv.ParseFloat(second, 64)

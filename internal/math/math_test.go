@@ -12,7 +12,6 @@ func TestCalc(t *testing.T) {
 		wantRes    float64
 		wantErr    error
 	}{
-		// Простые операции
 		{
 			name:       "Сложение",
 			expression: "2 + 2",
