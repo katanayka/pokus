@@ -129,31 +129,31 @@ func TestCalc(t *testing.T) {
 			name:       "Деление на ноль",
 			expression: "5 / 0",
 			wantRes:    0,
-			wantErr:    errors.New("делить на ноль нельзя"),
+			wantErr:    errors.New("division by zero"),
 		},
 		{
 			name:       "Некорректное выражение",
 			expression: "2 + + 3",
 			wantRes:    0,
-			wantErr:    errors.New("некорректный ввод"),
+			wantErr:    errors.New("invalid expression"),
 		},
 		{
 			name:       "нет открывающей скобки",
 			expression: "5 * (3 + 2))",
 			wantRes:    0,
-			wantErr:    errors.New("некорректный ввод"),
+			wantErr:    errors.New("invalid expression"),
 		},
 		{
 			name:       "Нет закрывающей скобки",
 			expression: "1 + (2 - 3",
 			wantRes:    0,
-			wantErr:    errors.New("некорректный ввод"),
+			wantErr:    errors.New("invalid expression"),
 		},
 		{
 			name:       "Пустое выражение",
 			expression: "",
 			wantRes:    0,
-			wantErr:    errors.New("некорректный ввод"),
+			wantErr:    errors.New("invalid expression"),
 		},
 	}
 
