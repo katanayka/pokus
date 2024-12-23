@@ -1,6 +1,6 @@
 # Calc API
 
-This project implements a web service for evaluating arithmetic expressions.
+Этот проект реализует веб-сервис для вычисления арифметических выражений.
 
 ## Starting the service
 1. Install [Go](https://go.dev/dl/)
