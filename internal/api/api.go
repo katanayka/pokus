@@ -36,6 +36,11 @@ func CalculateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.Expression == "" {
+		http.Error(w, "Missing required field: Expression", http.StatusBadRequest)
+		return
+	}
+
 	result, err := math.Calc(req.Expression)
 	if err != nil {
 		sendErrorResponse(w, err.Error(), http.StatusUnprocessableEntity)

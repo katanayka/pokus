@@ -12,7 +12,7 @@ func Operation(first string, operand string, second string) (float64, error) {
 	num1, err1 := strconv.ParseFloat(first, 64)
 	num2, err2 := strconv.ParseFloat(second, 64)
 	if err1 != nil || err2 != nil {
-		return 0, errors.New("некорректный ввод")
+		return 0, errors.New("invalid expression")
 	}
 	switch operand {
 	case "+":
@@ -23,11 +23,11 @@ func Operation(first string, operand string, second string) (float64, error) {
 		return num1 * num2, nil
 	case "/":
 		if num2 == 0 {
-			return 0, errors.New("делить на ноль нельзя")
+			return 0, errors.New("division by zero")
 		}
 		return num1 / num2, nil
 	default:
-		return 0, errors.New("неизвестный операнд")
+		return 0, errors.New("unknown operation")
 	}
 }
 
@@ -84,18 +84,18 @@ func Calc(expression string) (float64, error) {
 	re := regexp.MustCompile(`-?\d+(\.\d*)?|[+\-*/()]`)
 	split := re.FindAllString(expression, -1)
 	if len(split) == 0 {
-		return 0, errors.New("некорректный ввод")
+		return 0, errors.New("invalid expression")
 	}
 	split, err := FindPriorityOperand(split)
 	if err != nil {
 		return 0, err
 	}
 	if len(split) != 1 {
-		return 0, errors.New("некорректный ввод")
+		return 0, errors.New("invalid expression")
 	}
 	result, err := strconv.ParseFloat(split[0], 64)
 	if err != nil {
-		return 0, errors.New("ошибка при получении ответа")
+		return 0, errors.New("error parsing result")
 	}
 	return result, nil
 }
