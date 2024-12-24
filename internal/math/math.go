@@ -14,21 +14,21 @@ func Operation(first string, operand string, second string) (float64, error) {
 	if err1 != nil || err2 != nil {
 		return 0, errors.New("invalid expression")
 	}
+	var res float64 = 0
 	switch operand {
 	case "+":
-		return num1 + num2, nil
+		res = num1 + num2
 	case "-":
-		return num1 - num2, nil
+		res = num1 - num2
 	case "*":
-		return num1 * num2, nil
+		res = num1 * num2
 	case "/":
 		if num2 == 0 {
 			return 0, errors.New("division by zero")
 		}
-		return num1 / num2, nil
-	default:
-		return 0, errors.New("unknown operation")
+		res = num1 / num2
 	}
+	return res, nil
 }
 
 func removeBrackets(arr []string) []string {
@@ -94,8 +94,5 @@ func Calc(expression string) (float64, error) {
 		return 0, errors.New("invalid expression")
 	}
 	result, err := strconv.ParseFloat(split[0], 64)
-	if err != nil {
-		return 0, errors.New("error parsing result")
-	}
 	return result, nil
 }
