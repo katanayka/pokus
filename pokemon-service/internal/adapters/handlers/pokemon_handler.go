@@ -2,7 +2,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -64,7 +63,6 @@ func (h *PokemonHandler) Create(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	log.Println(pokemon)
 	id, err := h.service.CreatePokemon(c.Request.Context(), pokemon)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
