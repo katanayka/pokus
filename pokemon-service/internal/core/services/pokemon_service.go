@@ -1,4 +1,3 @@
-// internal/core/services/pokemon_service.go
 package services
 
 import (

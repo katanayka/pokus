@@ -1,4 +1,3 @@
-// internal/adapters/pg/postgres.go
 package pg
 
 import (

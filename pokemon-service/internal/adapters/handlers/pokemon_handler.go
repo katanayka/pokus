@@ -1,4 +1,3 @@
-// internal/adapters/handlers/pokemon_handler.go
 package handlers
 
 import (
