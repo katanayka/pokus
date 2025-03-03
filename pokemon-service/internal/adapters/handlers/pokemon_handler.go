@@ -2,6 +2,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -23,6 +24,7 @@ func NewPokemonHandler(r *gin.Engine, service ports.PokemonService) {
 	{
 		g.GET("/:id", handler.Get)
 		g.POST("", handler.Create)
+		g.GET("", handler.GetAll)
 	}
 }
 
@@ -47,13 +49,22 @@ func (h *PokemonHandler) Get(c *gin.Context) {
 	c.JSON(http.StatusOK, pokemon)
 }
 
+func (h *PokemonHandler) GetAll(c *gin.Context) {
+	pokemons, err := h.service.GetAllPokemons(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, pokemons)
+}
+
 func (h *PokemonHandler) Create(c *gin.Context) {
 	var pokemon domain.Pokemon
 	if err := c.ShouldBindJSON(&pokemon); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	log.Println(pokemon)
 	id, err := h.service.CreatePokemon(c.Request.Context(), pokemon)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

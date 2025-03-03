@@ -49,7 +49,7 @@ func main() {
 		Addr:    ":" + port,
 		Handler: router,
 	}
-
+	log.Printf("Server running on: %s", srv.Addr)
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %s\n", err)

@@ -1,4 +1,4 @@
-// internal/adapters/db/postgres.go
+// internal/adapters/pg/postgres.go
 package pg
 
 import (
@@ -23,11 +23,19 @@ func (r *pokemonRepository) GetByID(ctx context.Context, id int) (*domain.Pokemo
 	var pokemon domain.Pokemon
 	if err := r.db.WithContext(ctx).First(&pokemon, id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, nil // Pokemon not found, return nil without error
+			return nil, nil
 		}
 		return nil, err
 	}
 	return &pokemon, nil
+}
+
+func (r *pokemonRepository) GetAll(ctx context.Context) ([]domain.Pokemon, error) {
+	var pokemons []domain.Pokemon
+	if err := r.db.WithContext(ctx).Find(&pokemons).Error; err != nil {
+		return nil, err
+	}
+	return pokemons, nil
 }
 
 func (r *pokemonRepository) Create(ctx context.Context, pokemon domain.Pokemon) (int, error) {
