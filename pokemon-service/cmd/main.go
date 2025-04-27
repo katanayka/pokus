@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -9,46 +10,47 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-
-	"github.com/katanayka/pokus/pokemon-service/internal/adapters/handlers"
-	"github.com/katanayka/pokus/pokemon-service/internal/adapters/pg"
-	"github.com/katanayka/pokus/pokemon-service/internal/core/domain"
-	"github.com/katanayka/pokus/pokemon-service/internal/core/services"
+	"github.com/katanayka/pokus/pokemon-service/internal/adapter/config"
+	h "github.com/katanayka/pokus/pokemon-service/internal/adapter/handler/http"
+	r "github.com/katanayka/pokus/pokemon-service/internal/adapter/storage/pokeapi"
+	"github.com/katanayka/pokus/pokemon-service/internal/adapter/storage/redis"
+	s "github.com/katanayka/pokus/pokemon-service/internal/core/service"
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
-
-	dbURL := os.Getenv("DATABASE_URL")
-	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
+	// load environment variables
+	config, err := config.New()
 	if err != nil {
-		log.Fatalf("Unable to connect to database: %v", err)
+		log.Print("Error loading environment variables ", err)
+		os.Exit(1)
 	}
+	ctx := context.Background()
 
-	if err := db.AutoMigrate(&domain.Pokemon{}); err != nil {
-		log.Fatalf("Failed to auto-migrate schema: %v", err)
+	// init cache
+	cache, err := redis.New(ctx, config.Redis)
+	if err != nil {
+		log.Println("Error initializing cache ", err)
+		os.Exit(1)
 	}
+	defer cache.Close()
 
-	pokemonRepo := pg.NewPokemonRepository(db)
-	pokemonService := services.NewPokemonService(pokemonRepo)
+	// init dependencies
+	pokemonRepo := r.NewPokemonRepository("https://pokeapi.co/api/v2/")
+	pokemonService := s.NewPokemonService(pokemonRepo, cache)
+	pokemonHandler := h.NewPokemonHandler(pokemonService)
 
-	ginMode := os.Getenv("GIN_MODE")
-	gin.SetMode(ginMode)
+	// init server
+	router, _ := h.NewRouter(
+		config.HTTP,
+		*pokemonHandler,
+	)
 
-	router := gin.Default()
-	handlers.NewPokemonHandler(router, pokemonService)
-
-	port := os.Getenv("SERVER_PORT")
 	srv := &http.Server{
-		Addr:    ":" + port,
+		Addr:    fmt.Sprintf("%s:%s", config.HTTP.URL, config.HTTP.Port),
 		Handler: router,
 	}
+
+	// start server
 	log.Printf("Server running on: %s", srv.Addr)
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -56,6 +58,7 @@ func main() {
 		}
 	}()
 
+	// graceful shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
