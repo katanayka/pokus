@@ -1,0 +1,52 @@
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+
+.venv/
+venv/
+ENV/
+env/
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage/
+htmlcov/
+
+*.log
+*.sqlite3
+db.sqlite3
+
+# Django static/media (generated)
+staticfiles/
+media/
+
+# Local env files (keep .env.example)
+.env
+.env.*
+!.env.example
+
+# Node / Vite (frontend)
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.env
+frontend/.env.*
+
+# Go (notification)
+notification/*.exe
+notification/*.out
+notification/*.test
+notification/notify
+notification/bin/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo

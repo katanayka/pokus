@@ -1,0 +1,44 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+    ports:
+      - "5433:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile.django
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+      - notify
+    ports:
+      - "8000:8000"
+  notify:
+    build:
+      context: notification
+      dockerfile: Dockerfile
+    environment:
+      NOTIFY_TOKEN: ${NOTIFY_TOKEN:-notify-secret}
+    ports:
+      - "8081:8081"
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - django
+      - notify
+    ports:
+      - "80:80"
+volumes:
+  dbdata: {}

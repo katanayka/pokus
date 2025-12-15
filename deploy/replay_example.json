@@ -1,0 +1,11 @@
+{
+  "battle_id": 1,
+  "seed": 12345,
+  "events": [
+    {"turn": 1, "actor": "a", "action": "hit", "dmg": 12, "crit": false, "target_hp": 88},
+    {"turn": 1, "actor": "b", "action": "defend"},
+    {"turn": 2, "actor": "b", "action": "hit", "dmg": 10, "crit": true, "target_hp": 78},
+    {"turn": 2, "actor": "a", "action": "miss"}
+  ],
+  "outcome": {"winner": "b", "loser": "a"}
+}
